@@ -29,8 +29,7 @@ void muat_kata(const char *path, char array[][MAX_WORD_LEN], int jumlah) {
     }
 
     for (int i = 0; i < jumlah; i++) {
-        // Pastikan kita membaca kata dengan panjang maksimum MAX_WORD_LEN-1
-        if (fscanf(file, "%99s", array[i]) != 1) break;
+        if (fscanf(file, "%s", array[i]) != 1) break;
     }
 
     fclose(file);
@@ -103,18 +102,20 @@ int main() {
             "Bubble Sort (int)", "Selection Sort (int)", "Insertion Sort (int)",
             "Merge Sort (int)", "Quick Sort (int)", "Shell Sort (int)"
         };
-        void (*fungsi_sort[])(int[], int, int) = {
+        void (*fungsi_sort[])(int[], int) = {
             bubble_sort, selection_sort, insertion_sort,
-            merge_sort, quick_sort, shell_sort
+            NULL, NULL, shell_sort
         };
 
         for (int i = 0; i < 6; i++) {
             salin_array(data, data_awal, jumlah);
             mulai = clock();
-            if (i < 3) {  // Untuk algoritma integer
-                fungsi_sort[i](data, 0, jumlah - 1);
-            } else {  // Untuk algoritma integer dengan tiga parameter
-                fungsi_sort[i](data, 0, jumlah - 1);
+            if (fungsi_sort[i]) {
+                fungsi_sort[i](data, jumlah);
+            } else if (i == 3) {
+                merge_sort(data, 0, jumlah - 1);
+            } else if (i == 4) {
+                quick_sort(data, 0, jumlah - 1);
             }
             selesai = clock();
             durasi = ((double)(selesai - mulai)) / CLOCKS_PER_SEC;
@@ -124,8 +125,7 @@ int main() {
         free(data_awal);
         free(data);
     } else {
-        // Alokasi memori untuk kata
-        char (*kata)[MAX_WORD_LEN] = malloc(sizeof(char) * MAX_WORD_LEN * jumlah);
+        char (*kata)[MAX_WORD_LEN] = malloc(sizeof(char[MAX_WORD_LEN]) * jumlah);
         if (!kata) {
             printf("Gagal alokasi memori untuk kata.\n");
             return 1;
@@ -133,28 +133,16 @@ int main() {
 
         muat_kata("../data/data_kata.txt", kata, jumlah);
 
-        const char *nama_sort_words[] = {
-            "Bubble Sort (kata)", "Selection Sort (kata)", "Insertion Sort (kata)",
-            "Merge Sort (kata)", "Quick Sort (kata)", "Shell Sort (kata)"
-        };
-        void (*fungsi_sort_words[])(char[][MAX_WORD_LEN], int, int) = {
-            bubble_sort_words, selection_sort_words, insertion_sort_words,
-            merge_sort_words, quick_sort_words, shell_sort_words
-        };
+        mulai = clock();
+        bubble_sort_words(kata, jumlah);
+        selesai = clock();
+        durasi = ((double)(selesai - mulai)) / CLOCKS_PER_SEC;
 
-        for (int i = 0; i < 6; i++) {
-            mulai = clock();
-            if (i < 3) {  // Untuk algoritma kata dengan dua parameter
-                fungsi_sort_words[i](kata, jumlah);
-            } else {  // Untuk algoritma kata dengan tiga parameter
-                fungsi_sort_words[i](kata, 0, jumlah - 1);
-            }
-            selesai = clock();
-            durasi = ((double)(selesai - mulai)) / CLOCKS_PER_SEC;
-            printf("| %-30s | %26.3f | %29.2f |\n", nama_sort_words[i], durasi, sizeof(char[MAX_WORD_LEN]) * jumlah / (1024.0 * 1024.0));
-        }
+        printf("| %-30s | %26.3f | %29.2f |\n", "Bubble Sort (kata)", durasi, sizeof(char[MAX_WORD_LEN]) * jumlah / (1024.0 * 1024.0));
 
         cetak_footer();
+        printf("Hanya Bubble Sort yang tersedia untuk tipe data kata.\n");
+
         free(kata);
         return 0;
     }
