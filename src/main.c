@@ -41,6 +41,12 @@ void salin_array(int tujuan[], int sumber[], int n) {
     }
 }
 
+void salin_array_kata(char tujuan[][MAX_WORD_LEN], char sumber[][MAX_WORD_LEN], int n) {
+    for (int i = 0; i < n; i++) {
+        strcpy(tujuan[i], sumber[i]);
+    }
+}
+
 int menu_jenis_data() {
     int pilihan;
     printf("=== PILIH TIPE DATA ===\n");
@@ -125,26 +131,70 @@ int main() {
         free(data_awal);
         free(data);
     } else {
+        // Alokasi dan inisialisasi array untuk data kata awal
+        char (*kata_awal)[MAX_WORD_LEN] = malloc(sizeof(char[MAX_WORD_LEN]) * jumlah);
+        if (!kata_awal) {
+            printf("Gagal alokasi memori untuk kata awal.\n");
+            return 1;
+        }
+        
+        // Muat data kata dari file
+        muat_kata("../data/data_kata.txt", kata_awal, jumlah);
+        
+        // Alokasi array untuk data kata yang akan diurutkan
         char (*kata)[MAX_WORD_LEN] = malloc(sizeof(char[MAX_WORD_LEN]) * jumlah);
         if (!kata) {
             printf("Gagal alokasi memori untuk kata.\n");
+            free(kata_awal);
             return 1;
         }
 
-        muat_kata("../data/data_kata.txt", kata, jumlah);
+        const char *nama_sort[] = {
+            "Bubble Sort (kata)", "Selection Sort (kata)", "Insertion Sort (kata)",
+            "Merge Sort (kata)", "Quick Sort (kata)", "Shell Sort (kata)"
+        };
 
-        mulai = clock();
-        bubble_sort_words(kata, jumlah);
-        selesai = clock();
-        durasi = ((double)(selesai - mulai)) / CLOCKS_PER_SEC;
+        // Jalankan dan ukur waktu untuk setiap algoritma sorting
+        for (int i = 0; i < 6; i++) {
+            // Salin data kata awal ke array yang akan diurutkan
+            salin_array_kata(kata, kata_awal, jumlah);
+            
+            mulai = clock();
+            
+            // Panggil fungsi sorting yang sesuai
+            switch (i) {
+                case 0:
+                    bubble_sort_words(kata, jumlah);
+                    break;
+                case 1:
+                    selection_sort_words(kata, jumlah);
+                    break;
+                case 2:
+                    insertion_sort_words(kata, jumlah);
+                    break;
+                case 3:
+                    merge_sort_words(kata, 0, jumlah - 1);
+                    break;
+                case 4:
+                    quick_sort_words(kata, 0, jumlah - 1);
+                    break;
+                case 5:
+                    shell_sort_words(kata, jumlah);
+                    break;
+            }
+            
+            selesai = clock();
+            durasi = ((double)(selesai - mulai)) / CLOCKS_PER_SEC;
+            
+            // Hitung penggunaan memori (ukuran array kata)
+            double memori = sizeof(char[MAX_WORD_LEN]) * jumlah / (1024.0 * 1024.0);
+            
+            printf("| %-30s | %26.3f | %29.2f |\n", nama_sort[i], durasi, memori);
+        }
 
-        printf("| %-30s | %26.3f | %29.2f |\n", "Bubble Sort (kata)", durasi, sizeof(char[MAX_WORD_LEN]) * jumlah / (1024.0 * 1024.0));
-
-        cetak_footer();
-        printf("Hanya Bubble Sort yang tersedia untuk tipe data kata.\n");
-
+        // Bebaskan memori
+        free(kata_awal);
         free(kata);
-        return 0;
     }
 
     cetak_footer();
