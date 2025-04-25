@@ -8,7 +8,7 @@
 ## Penjelasan Tentang Tugas
 
 ### Deskripsi  
-Tugas ini merupakan bagian dari mata kuliah **Struktur Data dan Algoritma** di Program Studi Informatika, Universitas Syiah Kuala. Fokus utama dari tugas ini adalah mengimplementasikan dan menganalisis performa berbagai algoritma **sorting** (pengurutan data) dalam hal **waktu eksekusi** dan **penggunaan memori** pada dataset berskala besar (hingga 2 juta data).
+Tugas ini merupakan bagian dari mata kuliah **Struktur Data dan Algoritma** di Program Studi Informatika USK. Fokus utama dari tugas ini adalah mengimplementasikan dan menganalisis performa berbagai algoritma **sorting** (pengurutan data) dalam hal **waktu eksekusi** dan **penggunaan memori** pada dataset berskala besar (hingga 2 juta data).
 
 ---
 
@@ -23,7 +23,7 @@ Terdapat enam algoritma sorting yang dianalisis dan diuji dalam tugas ini:
 - Quick Sort  
 - Shell Sort  
 
-Setiap algoritma diimplementasikan dalam bahasa **C**, dengan masing-masing fungsi ditulis dalam file header (`.h`) dan dipanggil dari file utama (`.c`). Komentar penjelas ditambahkan di atas setiap fungsi untuk mempermudah pemahaman kode.
+Setiap algoritma diimplementasikan dalam bahasa **C**, dengan masing-masing fungsi ditulis dalam file header (`.h`) dan dipanggil dari file utama (`.c`).
 
 ---
 
@@ -50,10 +50,6 @@ Pengujian dilakukan menggunakan dataset dengan ukuran bertahap sebagai berikut:
 - 1.000.000  
 - 1.500.000  
 - 2.000.000  
-
-Untuk setiap ukuran data, dilakukan pengukuran terhadap:
-- **Waktu eksekusi** menggunakan `clock()` dari `<time.h>`  
-- **Penggunaan memori** menggunakan `valgrind` atau tools profiling lainnya  
 
 ---
 
